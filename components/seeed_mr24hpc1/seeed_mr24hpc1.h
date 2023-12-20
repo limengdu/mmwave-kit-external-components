@@ -164,6 +164,7 @@ class MR24HPC1Component : public Component,
   int sg_start_query_data_;
   bool check_dev_inf_sign_;
   bool poll_time_base_func_check_;
+  GPIOPin *mos_pin_;
 
   void update_();
   void r24_split_data_frame(uint8_t value);
@@ -175,11 +176,12 @@ class MR24HPC1Component : public Component,
   void send_query(uint8_t *query, size_t string_length);
 
  public:
+  void set_mos_pin(GPIOPin *mos_pin) { mos_pin_ = mos_pin; }
   float get_setup_priority() const override { return esphome::setup_priority::LATE; }
   void setup() override;
   void dump_config() override;
   void loop() override;
-  
+
   void get_heartbeat_packet();
   void get_radar_output_information_switch();
   void get_product_mode();

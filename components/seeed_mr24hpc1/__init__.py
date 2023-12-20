@@ -1,4 +1,5 @@
 import esphome.codegen as cg
+from esphome import pins
 import esphome.config_validation as cv
 from esphome.components import uart
 from esphome.const import CONF_ID
@@ -19,11 +20,13 @@ MR24HPC1Component = mr24hpc1_ns.class_(
 )
 
 CONF_MR24HPC1_ID = "mr24hpc1_id"
+CONF_MOS_PIN = "mos_pin"
 
 CONFIG_SCHEMA = (
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(MR24HPC1Component),
+            cv.Required(CONF_MOS_PIN): pins.gpio_output_pin_schema,
         }
     )
     .extend(uart.UART_DEVICE_SCHEMA).extend(cv.COMPONENT_SCHEMA)
@@ -55,3 +58,5 @@ async def to_code(config):
     await cg.register_component(var, config)
     # This line of code registers the newly created Pvariable as a device.
     await uart.register_uart_device(var, config)
+    mos_pin = await cg.gpio_pin_expression(config[CONF_MOS_PIN])
+    cg.add(var.set_mos_pin(mos_pin))
